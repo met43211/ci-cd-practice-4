@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: web
-          image: yourdockerhub/myapp:latest
+          image: yourdockerhub/ci-cd-practice-4:latest
           ports:
             - containerPort: 5000
