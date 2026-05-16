@@ -1,0 +1,26 @@
+name: Deploy to Kubernetes
+
+# Автоматизация деплоя: запуск вручную (Actions → этот workflow → Run workflow).
+# Подготовка: Settings → Secrets → добавить KUBE_CONFIG (содержимое kubeconfig в base64).
+# Для непрерывного деплоя при каждом push добавьте trigger push branches main и убедитесь, что секрет задан.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
+
+      - name: Apply manifests
+        run: kubectl apply -f k8s/
